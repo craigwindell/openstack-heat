@@ -1,0 +1,13 @@
+heat_template_version: 2021-04-16
+
+description: A simple template to deploy a single virtual machine
+
+resources:
+  server01:
+    type: OS::Nova::Server
+    properties:
+      key_name: default_key
+      image: NeCTAR Ubuntu 22.04 LTS (Jammy) amd64
+      flavor: t3.xsmall
+      networks:
+        - allocate_network: auto
