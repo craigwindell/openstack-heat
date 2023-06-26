@@ -1,0 +1,37 @@
+heat_template_version: 2021-04-16
+
+description: A simple template to deploy a single virtual machine with some outputs
+
+parameters:
+  ssh_key:
+    type: string
+    label: SSH Key Name
+    description: SSH Key name to be used on the instance.
+    default: default_key
+  image_name:
+    type: string
+    label: Image Name
+    description: Image Name to apply to the instance
+    default: NeCTAR Ubuntu 22.04 LTS (Jammy) amd64
+  flavour:
+    type: string
+    label: Instance size
+    description: Instance flavor, eg t3.xsmall
+
+resources:
+  server01:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: ssh_key }
+      image: { get_param: image_name }
+      flavor: { get_param: flavour }
+      networks:
+        - allocate_network: auto
+
+outputs:
+  instance_default:
+    description: The IP address assigned to the server
+    value: { get_attr: [server01, first_address ] }
+  instance_show:
+    description: Show many details about the server
+    value: { get_attr: [server01, show] }
