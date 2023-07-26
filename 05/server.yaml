@@ -24,8 +24,9 @@ parameters:
     default: 0.0.0.0/0
 
 resources:
-  server01:
+  serverapp:
     type: OS::Nova::Server
+    depends_on: serverdb
     properties:
       key_name: { get_param: ssh_key }
       image: { get_param: image_name }
@@ -34,7 +35,7 @@ resources:
         - allocate_network: auto
       security_groups:
         - { get_resource: securitygroup }
-  server02:
+  serverdb:
     type: OS::Nova::Server
     properties:
       key_name: { get_param: ssh_key }
@@ -48,12 +49,12 @@ resources:
   securitygroup:
     type: OS::Neutron::SecurityGroup
     properties:
-      description: Provide Access to server01
+      description: Provide Access to serverapp
       name: server-access
   securitygroupDB:
     type: OS::Neutron::SecurityGroup
     properties:
-      description: Provide Access to server02 Database
+      description: Provide Access to serverdb Database
       name: database-access
   secgroup_ssh:
     type: OS::Neutron::SecurityGroupRule
@@ -76,8 +77,8 @@ resources:
 
 outputs:
   instance01_ip:
-    description: The IP address assigned to server01
-    value: { get_attr: [server01, first_address ] }
+    description: The IP address assigned to serverapp
+    value: { get_attr: [serverapp, first_address ] }
   instance02_ip:
-    description: The IP address assigned to server02
-    value: { get_attr: [server02, first_address ] }
+    description: The IP address assigned to serverdb
+    value: { get_attr: [serverdb, first_address ] }
